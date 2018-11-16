@@ -1,11 +1,11 @@
 package cache
 
 import (
+	"../utils"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/user"
 )
 
 type Cache struct {
@@ -55,12 +55,8 @@ func filename(filename string) CacheOption {
 }
 
 func New(options ...CacheOption) Cache {
-	currentUser, err := user.Current()
-	if err != nil {
-		panic(err)
-	}
 	args := &CacheOptions{
-		filename: fmt.Sprintf("%s/.daily_programmer_cache", currentUser.HomeDir),
+		filename: utils.DefaultCachePath(),
 	}
 	for _, option := range options {
 		option(args)
@@ -73,12 +69,8 @@ func New(options ...CacheOption) Cache {
 }
 
 func FromFile(options ...CacheOption) Cache {
-	currentUser, err := user.Current()
-	if err != nil {
-		panic(err)
-	}
 	args := &CacheOptions{
-		filename: fmt.Sprintf("%s/.daily_programmer_cache", currentUser.HomeDir),
+		filename: utils.DefaultCachePath(),
 	}
 	for _, option := range options {
 		option(args)
@@ -136,6 +128,7 @@ func (c *Cache) Save() {
 	if err != nil {
 		panic(err)
 	}
+	defer file.Close()
 
 	cacheJson, err := json.Marshal(*c)
 	if err != nil {
@@ -143,7 +136,6 @@ func (c *Cache) Save() {
 	}
 
 	file.Write(cacheJson)
-	file.Close()
 }
 
 func (c *Cache) SavePretty() {
@@ -151,6 +143,7 @@ func (c *Cache) SavePretty() {
 	if err != nil {
 		panic(err)
 	}
+	defer file.Close()
 
 	cacheJson, err := json.MarshalIndent(*c, "", "    ")
 	if err != nil {
@@ -158,5 +151,4 @@ func (c *Cache) SavePretty() {
 	}
 
 	file.Write(cacheJson)
-	file.Close()
 }
