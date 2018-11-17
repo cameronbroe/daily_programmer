@@ -2,6 +2,7 @@ package main
 
 import (
 	"./cache"
+	"./reddit"
 	"fmt"
 	// "github.com/go-resty/resty"
 )
@@ -36,4 +37,7 @@ func main() {
 	dpCache2.RemoveEntry(cache.DifficultyEasy, 1)
 	fmt.Println()
 	dpCache2.Display()
+
+	client := reddit.New()
+	client.GetPosts()
 }

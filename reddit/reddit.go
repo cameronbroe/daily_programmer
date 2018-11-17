@@ -3,11 +3,18 @@ package reddit
 import (
 	"../cache"
 	"../utils"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 )
 
+const UserAgent = "go:com.cameronbroe.daily_programmer:v0.0.1 (by /u/CommanderViral)"
+
 type Client struct {
-	cache   cache.Cache // Client should hold its own cache
-	apiRoot string      // Keep track of the API root for easy versioning updates
+	cache      cache.Cache // Client should hold its own cache
+	apiRoot    string      // Keep track of the API root for easy versioning updates
+	httpClient *http.Client
 }
 
 type Post struct{}
@@ -51,9 +58,13 @@ func New(options ...ClientOption) Client {
 		option(args)
 	}
 
+	// Create HTTP client
+	httpClient := &http.Client{}
+
 	return Client{
-		cache:   args.cache,
-		apiRoot: args.apiRoot,
+		cache:      args.cache,
+		apiRoot:    args.apiRoot,
+		httpClient: httpClient,
 	}
 }
 
@@ -72,7 +83,26 @@ func after(a string) RequestOption {
 	return func(s *RequestOptions) { s.after = a }
 }
 
-func (client *Client) GetPosts() *Response {
+func (client *Client) GetPosts() Response {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/r/dailyprogrammer.json", client.apiRoot), nil)
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Add("User-Agent", UserAgent)
 
-	return &Response{}
+	resp, err := client.httpClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	data := ResponseData{}
+	json.Unmarshal(body, &data)
+	fmt.Println(data)
+	return Response{}
 }
