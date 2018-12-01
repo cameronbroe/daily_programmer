@@ -1,26 +1,26 @@
 package cache
 
 import (
-	"../utils"
 	"encoding/json"
 	"fmt"
+	"github.com/cameronbroe/daily_programmer/utils"
 	"io/ioutil"
 	"os"
 )
 
 type Cache struct {
-	Entries  map[DifficultyType]map[int]Entry `json:"entries"`
+	Entries  map[utils.DifficultyType]map[int]Entry `json:"entries"`
 	filename string
 }
 
 type Entry struct {
-	Number      int            `json:"number"`
-	Difficulty  DifficultyType `json:"difficulty"`
-	Description string         `json:"description"`
-	Url         string         `json:"url"`
+	Number      int                  `json:"number"`
+	Difficulty  utils.DifficultyType `json:"difficulty"`
+	Description string               `json:"description"`
+	Url         string               `json:"url"`
 }
 
-func CreateEntry(number int, difficulty DifficultyType, description string, url string) Entry {
+func CreateEntry(number int, difficulty utils.DifficultyType, description string, url string) Entry {
 	return Entry{
 		Number:      number,
 		Difficulty:  difficulty,
@@ -35,14 +35,6 @@ func (e Entry) Display() {
 	fmt.Printf("description: %s\n", e.Description)
 	fmt.Printf("URL: %s\n", e.Url)
 }
-
-type DifficultyType int
-
-const (
-	DifficultyEasy   DifficultyType = 1
-	DifficultyMedium DifficultyType = 2
-	DifficultyHard   DifficultyType = 3
-)
 
 type CacheOptions struct {
 	filename string
@@ -63,7 +55,7 @@ func New(options ...CacheOption) Cache {
 	}
 
 	return Cache{
-		Entries:  make(map[DifficultyType]map[int]Entry),
+		Entries:  make(map[utils.DifficultyType]map[int]Entry),
 		filename: args.filename,
 	}
 }
@@ -95,14 +87,14 @@ func (c *Cache) AddEntry(entry *Entry) {
 	difficultyEntries[entry.Number] = *entry
 }
 
-func (c *Cache) RemoveEntry(difficulty DifficultyType, dpId int) {
+func (c *Cache) RemoveEntry(difficulty utils.DifficultyType, dpId int) {
 	delete(c.Entries[difficulty], dpId)
 	if len(c.Entries[difficulty]) == 0 {
 		delete(c.Entries, difficulty)
 	}
 }
 
-func (c *Cache) GetEntryById(difficulty DifficultyType, dpId int) Entry {
+func (c *Cache) GetEntryById(difficulty utils.DifficultyType, dpId int) Entry {
 	return c.Entries[difficulty][dpId]
 }
 

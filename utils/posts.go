@@ -1,12 +1,11 @@
 package utils
 
 import (
-	"../cache"
 	"regexp"
 	"strconv"
 )
 
-func ParseTitle(title string) (number int, difficulty cache.DifficultyType) {
+func ParseTitle(title string) (number int, difficulty DifficultyType) {
 	// Get the number first
 	numberRegex, err := regexp.Compile(`\s#(\d+)\s`)
 	if err != nil {
@@ -14,8 +13,8 @@ func ParseTitle(title string) (number int, difficulty cache.DifficultyType) {
 	}
 	numberMatch := numberRegex.FindStringSubmatch(title)
 
-	if len(numberMatch) > 0 {
-		number, err = strconv.Atoi(numberMatch[0])
+	if len(numberMatch) > 1 {
+		number, err = strconv.Atoi(numberMatch[1])
 		if err != nil {
 			panic(err)
 		}

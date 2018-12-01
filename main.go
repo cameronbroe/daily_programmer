@@ -1,9 +1,10 @@
 package main
 
 import (
-	"./cache"
-	"./reddit"
 	"fmt"
+	"github.com/cameronbroe/daily_programmer/cache"
+	"github.com/cameronbroe/daily_programmer/reddit"
+	"github.com/cameronbroe/daily_programmer/utils"
 	// "github.com/go-resty/resty"
 )
 
@@ -14,13 +15,13 @@ func main() {
 	dpCache := cache.New()
 	testEntry := cache.CreateEntry(
 		1,
-		cache.DifficultyEasy,
+		utils.DifficultyEasy,
 		"foo bar",
 		"https://google.com",
 	)
 	testEntry2 := cache.CreateEntry(
 		2,
-		cache.DifficultyEasy,
+		utils.DifficultyEasy,
 		"foo bar 2",
 		"https://cameronbroe.com",
 	)
@@ -34,7 +35,7 @@ func main() {
 
 	dpCache2 := cache.FromFile()
 	dpCache2.Display()
-	dpCache2.RemoveEntry(cache.DifficultyEasy, 1)
+	dpCache2.RemoveEntry(utils.DifficultyEasy, 1)
 	fmt.Println()
 	dpCache2.Display()
 

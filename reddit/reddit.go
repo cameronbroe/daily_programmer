@@ -1,10 +1,10 @@
 package reddit
 
 import (
-	"../cache"
-	"../utils"
 	"encoding/json"
 	"fmt"
+	"github.com/cameronbroe/daily_programmer/cache"
+	"github.com/cameronbroe/daily_programmer/utils"
 	"io/ioutil"
 	"net/http"
 )
